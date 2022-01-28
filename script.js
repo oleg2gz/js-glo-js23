@@ -1,11 +1,30 @@
-var title = 'old way'
+'use strict'
 
-const screens = 'constant, list of items'
+const title = 'Проект'
+const screens = 'Простые, Сложные, Интерактивные'
+const screenPrice = 425
+const rollback = 15
+const fullPrice = 5000
+const adaptive = true
 
-let screenPrice = 'changable, 425'
+// Вывести в консоль тип данных значений переменных title, fullPrice, adaptive
+console.log(typeof title)
+console.log(typeof fullPrice)
+console.log(typeof adaptive)
 
-let rollback, fullPrice, adaptive
+// Вывести в консоль длину строки screens
+console.log(screens.length)
 
-alert('Hi there!')
+// Вывести в консоль “Стоимость верстки экранов (screenPrice) рублей/ долларов/гривен/юани” и “Стоимость разработки сайта (fullPrice) рублей/ долларов/гривен/юани”
+console.log(
+  `Стоимость верстки экранов ${screenPrice} рублей/ долларов/гривен/юаней`
+)
+console.log(
+  `Стоимость разработки сайта ${fullPrice} рублей/ долларов/гривен/юаней`
+)
 
-console.log('Hello Console!')
+// Привести строку screens к нижнему регистру и разбить строку на массив, вывести массив в консоль
+console.log(screens.toLowerCase().split(''))
+
+// Вывести в консоль Процент отката посреднику за работу (fullPrice * (rollback/100))
+console.log(fullPrice * (rollback / 100))
