@@ -15,12 +15,12 @@ const rollback = 15
 
 let allServicePrices, fullPrice, servicePercentPrice
 
-const getAllServicePrices = function () {
-  return servicePrice1 + servicePrice2
+const getAllServicePrices = function (value1, value2) {
+  return value1 + value2
 }
 
-function getFullPrice() {
-  return screenPrice + allServicePrices
+function getFullPrice(value1, value2) {
+  return value1 + value2
 }
 
 const getTitle = (str) => {
@@ -30,8 +30,8 @@ const getTitle = (str) => {
   return str[0].toUpperCase() + str.slice(1).toLowerCase()
 }
 
-const getServicePercentPrices = () => {
-  return Math.ceil(fullPrice - fullPrice * (rollback / 100))
+const getServicePercentPrices = (price, rollback) => {
+  return Math.ceil(price - price * (rollback / 100))
 }
 
 const getRollbackMessage = (price) => {
@@ -65,9 +65,9 @@ const getScreens = (str) => {
 screens = getScreens(screens)
 
 title = getTitle(title)
-allServicePrices = getAllServicePrices()
-fullPrice = getFullPrice()
-servicePercentPrice = getServicePercentPrices()
+allServicePrices = getAllServicePrices(servicePrice1, servicePrice2)
+fullPrice = getFullPrice(screenPrice, allServicePrices)
+servicePercentPrice = getServicePercentPrices(fullPrice, rollback)
 
 showTypeOf(title, fullPrice, adaptive)
 
@@ -76,4 +76,4 @@ console.log(getRollbackMessage(fullPrice))
 console.log('screens as a string: ', screens?.toLowerCase() || 'no data')
 console.log('screens as an array: ', screens?.toLowerCase().split(', '))
 
-console.log(getServicePercentPrices())
+console.log(getServicePercentPrices(fullPrice, rollback))
