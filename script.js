@@ -12,6 +12,7 @@ let title,
   servicePercentPrice
 
 const isNumber = (num) => {
+  if (num === null || num[0] === ' ') return false
   return !isNaN(parseFloat(num)) && isFinite(num)
 }
 
