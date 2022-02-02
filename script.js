@@ -1,22 +1,55 @@
 'use strict'
 
-let title = prompt('Как называется ваш проект?', 'Проект')
-let screens = prompt(
-  'Какие типы экранов нужно разработать?',
-  'Простые, Сложные, Интерактивные'
-)
-const screenPrice = +prompt('Сколько будет стоить данная работа?')
-const adaptive = confirm('Нужен ли адаптив на сайте?')
-const service1 = prompt('Какой дополнительный тип услуги нужен?')
-const servicePrice1 = +prompt('Сколько это будет стоить?')
-const service2 = prompt('Какой дополнительный тип услуги нужен?')
-const servicePrice2 = +prompt('Сколько это будет стоить?')
-const rollback = 15
+const rollback = 10
+let title,
+  screens,
+  screenPrice,
+  adaptive,
+  allServicePrices,
+  service1,
+  service2,
+  fullPrice,
+  servicePercentPrice
 
-let allServicePrices, fullPrice, servicePercentPrice
+const isNumber = (num) => {
+  return !isNaN(parseFloat(num)) && isFinite(num)
+}
 
-const getAllServicePrices = function (value1, value2) {
-  return value1 + value2
+const asking = () => {
+  title = prompt('Как называется ваш проект?', 'Калькулятор вёрстки')
+  screens = prompt(
+    'Какие типы экранов нужно разработать?',
+    'Простые, Сложные, Интерактивные'
+  )
+
+  do {
+    screenPrice = prompt('Сколько будет стоить данная работа?')
+  } while (!isNumber(screenPrice))
+
+  adaptive = confirm('Нужен ли адаптив на сайте?')
+}
+
+const getAllServicePrices = () => {
+  let sum = 0
+  let i = 2
+
+  while (i) {
+    let tmpPrice
+
+    if (i === 2) {
+      service1 = prompt('Какой дополнительный тип услуги нужен?')
+    } else if (i === 1) {
+      service2 = prompt('Какой дополнительный тип услуги нужен?')
+    }
+
+    do {
+      tmpPrice = prompt('Сколько это будет стоить?')
+    } while (!isNumber(tmpPrice))
+
+    sum += +tmpPrice
+    i--
+  }
+  return sum
 }
 
 function getFullPrice(value1, value2) {
@@ -24,7 +57,7 @@ function getFullPrice(value1, value2) {
 }
 
 const getTitle = (str) => {
-  str = str || 'проект'
+  str = str || 'Калькулятор вёрстки'
   str = str.trim()
 
   return str[0].toUpperCase() + str.slice(1).toLowerCase()
@@ -62,18 +95,21 @@ const getScreens = (str) => {
   return str
 }
 
-screens = getScreens(screens)
-
-title = getTitle(title)
-allServicePrices = getAllServicePrices(servicePrice1, servicePrice2)
+asking()
+screenPrice = +screenPrice
+allServicePrices = getAllServicePrices()
 fullPrice = getFullPrice(screenPrice, allServicePrices)
 servicePercentPrice = getServicePercentPrices(fullPrice, rollback)
+title = getTitle(title)
 
 showTypeOf(title, fullPrice, adaptive)
+// TMP Временно, удаление лишних запятых в конце строки screens
+screens = getScreens(screens)
 
 console.log(getRollbackMessage(fullPrice))
 
-console.log('screens as a string: ', screens?.toLowerCase() || 'no data')
-console.log('screens as an array: ', screens?.toLowerCase().split(', '))
+console.log('screens: ', screens?.toLowerCase().split(', '))
 
-console.log(getServicePercentPrices(fullPrice, rollback))
+console.log('allServicePrices: ', allServicePrices)
+
+console.log('servicePercentPrice: ', servicePercentPrice)
