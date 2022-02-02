@@ -26,6 +26,7 @@ const asking = () => {
     screenPrice = prompt('Сколько будет стоить данная работа?')
   } while (!isNumber(screenPrice))
 
+  screenPrice = parseFloat(screenPrice)
   adaptive = confirm('Нужен ли адаптив на сайте?')
 }
 
@@ -46,7 +47,7 @@ const getAllServicePrices = () => {
       tmpPrice = prompt('Сколько это будет стоить?')
     } while (!isNumber(tmpPrice))
 
-    sum += +tmpPrice
+    sum += parseFloat(tmpPrice)
     i--
   }
   return sum
@@ -96,7 +97,6 @@ const getScreens = (str) => {
 }
 
 asking()
-screenPrice = +screenPrice
 allServicePrices = getAllServicePrices()
 fullPrice = getFullPrice(screenPrice, allServicePrices)
 servicePercentPrice = getServicePercentPrices(fullPrice, rollback)
