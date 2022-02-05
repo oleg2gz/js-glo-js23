@@ -11,9 +11,18 @@ let title,
   fullPrice,
   servicePercentPrice
 
-const isNumber = (num) => {
-  if (num === null || num[0] === ' ') return false
-  return !isNaN(parseFloat(num)) && isFinite(num)
+const getNumberFromUser = (message, defaultMessage) => {
+  let number = null
+
+  const isNumber = (num) => {
+    return !isNaN(parseFloat(num)) && isFinite(num)
+  }
+
+  do {
+    number = prompt(message, defaultMessage)
+  } while (!isNumber(number))
+
+  return parseFloat(number)
 }
 
 const asking = () => {
@@ -23,11 +32,7 @@ const asking = () => {
     'Простые, Сложные, Интерактивные'
   )
 
-  do {
-    screenPrice = prompt('Сколько будет стоить данная работа?')
-  } while (!isNumber(screenPrice))
-
-  screenPrice = parseFloat(screenPrice)
+  screenPrice = getNumberFromUser('Сколько будет стоить данная работа?', '')
   adaptive = confirm('Нужен ли адаптив на сайте?')
 }
 
@@ -44,11 +49,8 @@ const getAllServicePrices = () => {
       service2 = prompt('Какой дополнительный тип услуги нужен?')
     }
 
-    do {
-      tmpPrice = prompt('Сколько это будет стоить?')
-    } while (!isNumber(tmpPrice))
-
-    sum += parseFloat(tmpPrice)
+    tmpPrice = getNumberFromUser('Сколько это будет стоить?', '')
+    sum += tmpPrice
     i--
   }
   return sum
