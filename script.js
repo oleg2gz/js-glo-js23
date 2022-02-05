@@ -1,19 +1,19 @@
 'use strict'
 
 const appData = {
+  title: '',
+  screens: '',
+  screenPrice: 0,
+  adaptive: true,
   rollback: 10,
-  title: null,
-  screens: null,
-  screenPrice: null,
-  adaptive: null,
-  allServicePrices: null,
-  service1: null,
-  service2: null,
-  fullPrice: null,
-  servicePercentPrice: null,
+  allServicePrices: 0,
+  fullPrice: 0,
+  servicePercentPrice: 0,
+  service1: '',
+  service2: '',
 
   getNumberFromUser(message, defaultMessage) {
-    let number = null
+    let number = 0
 
     const isNumber = (num) => {
       return !isNaN(parseFloat(num)) && isFinite(num)
@@ -88,10 +88,6 @@ const appData = {
     }
   },
 
-  showTypeOf(...types) {
-    types.forEach((item) => console.log(item, typeof item))
-  },
-
   // TMP Временно, удаление лишних запятых в конце строки
   getScreens(str) {
     str = str || ''
@@ -104,14 +100,12 @@ const appData = {
   },
 
   logger() {
-    console.log('fullPrice: ', this.getRollbackMessage(this.fullPrice))
-    console.log('screens: ', this.screens?.toLowerCase().split(', '))
-    console.log('allServicePrices: ', this.allServicePrices)
-    console.log('servicePercentPrice: ', this.servicePercentPrice)
-
     for (let key in this) {
-      // console.log(this[key])
-      console.log(key)
+      if (typeof this[key] === 'function') {
+        console.log(key + ': method')
+      } else {
+        console.log(key + ': ', this[key])
+      }
     }
   },
 
@@ -124,8 +118,6 @@ const appData = {
       this.rollback
     )
     this.title = this.getTitle(this.title)
-
-    this.showTypeOf(this.title, this.fullPrice, this.adaptive)
     // TMP Временно, удаление лишних запятых в конце строки screens
     this.screens = this.getScreens(this.screens)
     this.logger()
