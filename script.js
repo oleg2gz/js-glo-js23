@@ -2,77 +2,95 @@
 
 const appData = {
   title: '',
-  screens: '',
+  screens: [],
   screenPrice: 0,
   adaptive: true,
   rollback: 10,
   allServicePrices: 0,
   fullPrice: 0,
   servicePercentPrice: 0,
-  service1: '',
-  service2: '',
+  services: {},
+  allServicePrices: 0,
+
+  isNumber(num) {
+    return !isNaN(parseFloat(num)) && isFinite(num)
+  },
+
+  getStringFromUser(message, defaultMessage) {
+    let string = ''
+
+    do {
+      string = prompt(message, defaultMessage)
+    } while (this.isNumber(string) || string === null || string.trim() === '')
+
+    return string
+  },
 
   getNumberFromUser(message, defaultMessage) {
     let number = 0
 
-    const isNumber = (num) => {
-      return !isNaN(parseFloat(num)) && isFinite(num)
-    }
-
     do {
       number = prompt(message, defaultMessage)
-    } while (!isNumber(number))
+    } while (!this.isNumber(number))
 
     return parseFloat(number)
   },
 
   asking() {
-    this.title = prompt('Как называется ваш проект?', 'Калькулятор вёрстки')
-    this.screens = prompt(
-      'Какие типы экранов нужно разработать?',
-      'Простые, Сложные, Интерактивные'
+    this.title = this.getStringFromUser(
+      'Как называется ваш проект?',
+      'Калькулятор вёрстки'
     )
 
-    this.screenPrice = this.getNumberFromUser(
-      'Сколько будет стоить данная работа?',
-      ''
-    )
+    for (let i = 1; i <= 2; i++) {
+      const name = this.getStringFromUser(
+        'Какие типы экранов нужно разработать?',
+        'Простые, Сложные, Интерактивные'
+      )
+      const price = this.getNumberFromUser(
+        'Сколько будет стоить данная работа?',
+        ''
+      )
+      this.screens.push({
+        id: i,
+        name,
+        price,
+      })
+    }
+
+    for (let i = 1; i <= 2; i++) {
+      const name = this.getStringFromUser(
+        'Какой дополнительный тип услуги нужен?',
+        ''
+      )
+      const price = this.getNumberFromUser('Сколько это будет стоить?', '')
+      this.services[i + ' ' + name] = price
+    }
+
     this.adaptive = confirm('Нужен ли адаптив на сайте?')
   },
 
-  getAllServicePrices() {
-    let sum = 0
-    let i = 2
-
-    while (i) {
-      let tmpPrice
-
-      if (i === 2) {
-        this.service1 = prompt('Какой дополнительный тип услуги нужен?')
-      } else if (i === 1) {
-        this.service2 = prompt('Какой дополнительный тип услуги нужен?')
-      }
-
-      tmpPrice = this.getNumberFromUser('Сколько это будет стоить?', '')
-      sum += tmpPrice
-      i--
-    }
-    return sum
+  addPrices() {
+    this.screenPrice = this.screens.reduce((acc, { price }) => acc + price, 0)
+    this.allServicePrices = Object.values(this.services).reduce(
+      (acc, price) => acc + price,
+      0
+    )
   },
 
-  getFullPrice(value1, value2) {
-    return value1 + value2
+  getFullPrice() {
+    this.fullPrice = this.screenPrice + this.allServicePrices
   },
 
-  getTitle(str) {
-    str = str || 'Калькулятор вёрстки'
-    str = str.trim()
-
-    return str[0].toUpperCase() + str.slice(1).toLowerCase()
+  getServicePercentPrices() {
+    this.servicePercentPrice = Math.ceil(
+      this.fullPrice - this.fullPrice * (this.rollback / 100)
+    )
   },
 
-  getServicePercentPrices(price, rollback) {
-    return Math.ceil(price - price * (rollback / 100))
+  getTitle() {
+    let str = this.title.trim()
+    this.title = str[0].toUpperCase() + str.slice(1).toLowerCase()
   },
 
   getRollbackMessage(price) {
@@ -88,38 +106,27 @@ const appData = {
     }
   },
 
-  // TMP Временно, удаление лишних запятых в конце строки
-  getScreens(str) {
-    str = str || ''
-    str = str.trim()
-
-    if (str[str.length - 1] === ',') {
-      str = str.slice(0, -1)
-    }
-    return str
-  },
-
   logger() {
+    const methods = []
+
     for (let key in this) {
       if (typeof this[key] === 'function') {
-        console.log(key + ': method')
+        methods.push(key)
       } else {
         console.log(key + ': ', this[key])
       }
     }
+
+    console.log('methods :', methods)
+    console.log(this.getRollbackMessage(this.screenPrice))
   },
 
   start() {
     this.asking()
-    this.allServicePrices = this.getAllServicePrices()
-    this.fullPrice = this.getFullPrice(this.screenPrice, this.allServicePrices)
-    this.servicePercentPrice = this.getServicePercentPrices(
-      this.fullPrice,
-      this.rollback
-    )
-    this.title = this.getTitle(this.title)
-    // TMP Временно, удаление лишних запятых в конце строки screens
-    this.screens = this.getScreens(this.screens)
+    this.addPrices()
+    this.getFullPrice()
+    this.getServicePercentPrices()
+    this.getTitle()
     this.logger()
   },
 }
