@@ -10,7 +10,6 @@ const appData = {
   fullPrice: 0,
   servicePercentPrice: 0,
   services: {},
-  allServicePrices: 0,
 
   isNumber(num) {
     return !isNaN(parseFloat(num)) && isFinite(num)
