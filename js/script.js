@@ -1,5 +1,26 @@
 'use strict'
 
+const title = document.getElementsByTagName('h1')[0]
+const btnHandlers = document.getElementsByClassName('handler_btn')
+const btnStart = btnHandlers[0]
+const btnReset = btnHandlers[1]
+const btnPlus = document.querySelector('.screen-btn')
+const mainControlsPercent = document.querySelectorAll('.other-items.percent')
+const mainControlsNumber = document.querySelectorAll('.other-items.number')
+const inputRange = document
+  .querySelector('.rollback')
+  .querySelector('input[type=range]')
+const rangeValue = document
+  .querySelector('.rollback')
+  .querySelector('span.range-value')
+const inputTotalAll = document.getElementsByClassName('total-input')
+const inputTotal = inputTotalAll[0]
+const inputTotalCount = inputTotalAll[1]
+const inputTotalCountOther = inputTotalAll[2]
+const inputTotalFullCount = inputTotalAll[3]
+const inputTotalCountRollback = inputTotalAll[4]
+let screens = document.querySelectorAll('.screen')
+
 const appData = {
   title: '',
   screens: [],
@@ -130,4 +151,21 @@ const appData = {
   },
 }
 
-appData.start()
+// appData.start()
+
+// TMP for testing purposes
+console.log('title: ', title)
+console.log('btnHandlers: ', btnHandlers)
+console.log('btnStart: ', btnStart)
+console.log('btnReset: ', btnReset)
+console.log('btnPlus: ', btnPlus)
+console.log('mainControlsPercent: ', mainControlsPercent)
+console.log('mainControlsNumber: ', mainControlsNumber)
+console.log('inputRange: ', inputRange)
+console.log('rangeValue: ', rangeValue)
+console.log('inputTotal: ', inputTotal)
+console.log('inputTotalCount: ', inputTotalCount)
+console.log('inputTotalCountOther: ', inputTotalCountOther)
+console.log('inputTotalFullCount: ', inputTotalFullCount)
+console.log('inputTotalCountRollback: ', inputTotalCountRollback)
+console.log('screens: ', screens)
