@@ -71,15 +71,11 @@ const appData = {
   },
 
   showRollback() {
-    // Ограничение отката до 99% - разрешение "заморозки" в 0.
-    // appData.rollback = appData.setRollbackLimit(+inputRange.value)
     appData.rollback = +inputRange.value
     rangeValue.textContent = appData.rollback + '%'
 
-    if (appData.servicePercentPrice) {
-      appData.addPrices()
-      totalCountRollback.value = appData.servicePercentPrice
-    }
+    appData.addPrices()
+    totalCountRollback.value = appData.servicePercentPrice
   },
 
   addScreens() {
@@ -159,12 +155,6 @@ const appData = {
 
   isNumber(value) {
     return !isNaN(parseFloat(value)) && isFinite(value)
-  },
-
-  // Ограничение отката до 99% - разрешение "заморозки" в 0.
-  setRollbackLimit(percent) {
-    if (percent === 100) return 99
-    return percent
   },
 
   logger() {
