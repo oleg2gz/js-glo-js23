@@ -4,6 +4,15 @@ const title = document.getElementsByTagName('h1')[0]
 const btnPlus = document.querySelector('.screen-btn')
 const otherItemsPercent = document.querySelectorAll('.other-items.percent')
 const otherItemsNumber = document.querySelectorAll('.other-items.number')
+
+const cmsCheckbox = document.getElementById('cms-open')
+const cmsBlock = document.querySelector('.hidden-cms-variants')
+const cmsSelect = document.getElementById('cms-select')
+const cmsOther = document.querySelector(
+  '.hidden-cms-variants > .main-controls__input'
+)
+const cmsOtherInput = document.getElementById('cms-other-input')
+
 const inputRange = document.querySelector('input[type=range]')
 const rangeValue = document.querySelector('span.range-value')
 
@@ -38,9 +47,19 @@ const appData = {
     this.addTitle()
     btnStart.addEventListener('click', this.start.bind(this))
     btnReset.addEventListener('click', this.reset.bind(this))
-    // btnReset.addEventListener('click', this.reset)
     btnPlus.addEventListener('click', this.addScreenBlock)
     inputRange.addEventListener('input', this.showRollback.bind(this))
+    cmsCheckbox.addEventListener('change', () => {
+      cmsBlock.style.display = cmsCheckbox.checked ? 'flex' : 'none'
+    })
+    cmsSelect.addEventListener('change', (e) => {
+      if (cmsSelect.value === 'other') {
+        cmsOther.style.display = 'block'
+      } else {
+        cmsOther.style.display = 'none'
+        cmsOtherInput.value = ''
+      }
+    })
   },
 
   addTitle() {
@@ -67,6 +86,8 @@ const appData = {
       select.disabled = true
       input.disabled = true
     })
+    cmsSelect.disabled = true
+    cmsOtherInput.disabled = true
     btnPlus.disabled = true
     btnStart.style.display = 'none'
     btnReset.style.display = ''
@@ -113,6 +134,13 @@ const appData = {
     btnPlus.disabled = false
     btnReset.style.display = 'none'
     btnStart.style.display = ''
+    cmsCheckbox.checked = false
+    cmsBlock.style.display = 'none'
+    cmsSelect.disabled = false
+    cmsSelect.selectedIndex = 0
+    cmsOther.style.display = 'none'
+    cmsOtherInput.disabled = false
+    cmsOtherInput.value = ''
     inputRange.value = 0
     rangeValue.textContent = 0
     total.value = 0
@@ -203,6 +231,14 @@ const appData = {
     this.fullPrice =
       this.screenPrice + this.servicePricesNumber + this.servicePricesPercent
 
+    if (this.isNumber(cmsSelect.value)) {
+      this.fullPrice += this.fullPrice * (parseFloat(cmsSelect.value) / 100)
+    }
+
+    if (this.isNumber(cmsOtherInput.value)) {
+      this.fullPrice += this.fullPrice * (parseFloat(cmsOtherInput.value) / 100)
+    }
+
     this.servicePercentPrice = Math.ceil(
       this.fullPrice - this.fullPrice * (this.rollback / 100)
     )
@@ -222,6 +258,8 @@ const appData = {
         console.log(key + ': ', this[key])
       }
     }
+    console.log('cmsSelect: ', cmsSelect.value)
+    console.log('cmsOtherInput: ', cmsOtherInput.value)
     // Посмотреть какие методы доступны
     // console.log('methods :', methods)
   },
