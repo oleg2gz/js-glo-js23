@@ -35,10 +35,10 @@ const appData = {
   servicesNumber: {},
 
   init() {
-    appData.addTitle()
-    btnStart.addEventListener('click', appData.start)
-    btnPlus.addEventListener('click', appData.addScreenBlock)
-    inputRange.addEventListener('input', appData.showRollback)
+    this.addTitle()
+    btnStart.addEventListener('click', this.start)
+    btnPlus.addEventListener('click', this.addScreenBlock)
+    inputRange.addEventListener('input', this.showRollback.bind(this))
   },
 
   addTitle() {
@@ -62,20 +62,19 @@ const appData = {
   },
 
   showResult() {
-    total.value = appData.screenPrice
-    totalCount.value = appData.screensCount
-    totalCountOther.value =
-      appData.servicePricesPercent + appData.servicePricesNumber
-    totalFullCount.value = appData.fullPrice
-    totalCountRollback.value = appData.servicePercentPrice
+    total.value = this.screenPrice
+    totalCount.value = this.screensCount
+    totalCountOther.value = this.servicePricesPercent + this.servicePricesNumber
+    totalFullCount.value = this.fullPrice
+    totalCountRollback.value = this.servicePercentPrice
   },
 
   showRollback() {
-    appData.rollback = +inputRange.value
-    rangeValue.textContent = appData.rollback + '%'
+    this.rollback = +inputRange.value
+    rangeValue.textContent = this.rollback + '%'
 
-    appData.addPrices()
-    totalCountRollback.value = appData.servicePercentPrice
+    this.addPrices()
+    totalCountRollback.value = this.servicePercentPrice
   },
 
   addScreens() {
@@ -160,11 +159,11 @@ const appData = {
   logger() {
     const methods = []
 
-    for (let key in appData) {
-      if (typeof appData[key] === 'function') {
+    for (let key in this) {
+      if (typeof this[key] === 'function') {
         methods.push(key)
       } else {
-        console.log(key + ': ', appData[key])
+        console.log(key + ': ', this[key])
       }
     }
     // Посмотреть какие методы доступны
