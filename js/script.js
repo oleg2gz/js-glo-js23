@@ -36,7 +36,9 @@ const appData = {
 
   init() {
     this.addTitle()
-    btnStart.addEventListener('click', this.start)
+    btnStart.addEventListener('click', this.start.bind(this))
+    // btnReset.addEventListener('click', this.reset.bind(this))
+    btnReset.addEventListener('click', this.reset())
     btnPlus.addEventListener('click', this.addScreenBlock)
     inputRange.addEventListener('input', this.showRollback.bind(this))
   },
@@ -46,19 +48,29 @@ const appData = {
   },
 
   start() {
-    appData.addScreens()
+    this.addScreens()
 
     if (
-      appData.screens.find(
-        ({ price, count }) => !price || !appData.isNumber(count)
-      )
+      this.screens.find(({ price, count }) => !price || !this.isNumber(count))
     )
       return
 
-    appData.addServices()
-    appData.addPrices()
-    appData.showResult()
-    appData.logger()
+    this.addServices()
+    this.addPrices()
+    this.showResult()
+    this.logger()
+
+    // Блокировать (свойство disabled) все input[type=text] и select с левой стороны после нажатия кнопки Рассчитать, после этого кнопка Рассчитать пропадает и появляется кнопка Сброс (id=reset)
+    // start > Рассчитать
+    // reset style="display: none
+  },
+
+  reset() {
+    // Метод должен быть расписан наподобие start().
+    // привести объект к исходному состоянию:
+    // - Кнопка Сброс должна замениться на кнопку Рассчитать
+    // - Должны быть убраны все дополнительные элементы (которые добавлялись динамически) и значения полей ввода
+    // - Все input[type=text] и select должны быть разблокированы
   },
 
   showResult() {
@@ -78,7 +90,7 @@ const appData = {
   },
 
   addScreens() {
-    appData.screens.length = 0
+    this.screens.length = 0
     screens = document.querySelectorAll('.screen')
 
     screens.forEach((screen, i) => {
@@ -86,7 +98,7 @@ const appData = {
       const input = screen.querySelector('input')
       const selectName = select.options[select.selectedIndex].textContent
 
-      appData.screens.push({
+      this.screens.push({
         id: i,
         name: selectName,
         price: +select.value * +input.value,
@@ -96,15 +108,15 @@ const appData = {
   },
 
   addServices() {
-    appData.servicesPercent = {}
-    appData.servicesNumber = {}
+    this.servicesPercent = {}
+    this.servicesNumber = {}
 
     otherItemsPercent.forEach((item) => {
       const check = item.querySelector('input[type=checkbox]')
       const label = item.querySelector('label')
       const input = item.querySelector('input[type=text]')
       if (check.checked) {
-        appData.servicesPercent[label.textContent] = +input.value
+        this.servicesPercent[label.textContent] = +input.value
       }
     })
     otherItemsNumber.forEach((item) => {
@@ -112,7 +124,7 @@ const appData = {
       const label = item.querySelector('label')
       const input = item.querySelector('input[type=text]')
       if (check.checked) {
-        appData.servicesNumber[label.textContent] = +input.value
+        this.servicesNumber[label.textContent] = +input.value
       }
     })
   },
@@ -125,30 +137,23 @@ const appData = {
   },
 
   addPrices() {
-    appData.screenPrice = appData.screens.reduce(
-      (acc, { price }) => acc + price,
-      0
-    )
-    appData.screensCount = appData.screens.reduce(
-      (acc, { count }) => acc + count,
-      0
-    )
+    this.screenPrice = this.screens.reduce((acc, { price }) => acc + price, 0)
+    this.screensCount = this.screens.reduce((acc, { count }) => acc + count, 0)
 
-    appData.servicePricesNumber = Object.values(appData.servicesNumber).reduce(
+    this.servicePricesNumber = Object.values(this.servicesNumber).reduce(
       (acc, price) => acc + price,
       0
     )
-    appData.servicePricesPercent = Object.values(
-      appData.servicesPercent
-    ).reduce((acc, percent) => acc + appData.screenPrice * (percent / 100), 0)
+    this.servicePricesPercent = Object.values(this.servicesPercent).reduce(
+      (acc, percent) => acc + this.screenPrice * (percent / 100),
+      0
+    )
 
-    appData.fullPrice =
-      appData.screenPrice +
-      appData.servicePricesNumber +
-      appData.servicePricesPercent
+    this.fullPrice =
+      this.screenPrice + this.servicePricesNumber + this.servicePricesPercent
 
-    appData.servicePercentPrice = Math.ceil(
-      appData.fullPrice - appData.fullPrice * (appData.rollback / 100)
+    this.servicePercentPrice = Math.ceil(
+      this.fullPrice - this.fullPrice * (this.rollback / 100)
     )
   },
 
