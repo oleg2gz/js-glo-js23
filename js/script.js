@@ -37,8 +37,8 @@ const appData = {
   init() {
     this.addTitle()
     btnStart.addEventListener('click', this.start.bind(this))
-    // btnReset.addEventListener('click', this.reset.bind(this))
-    btnReset.addEventListener('click', this.reset())
+    btnReset.addEventListener('click', this.reset.bind(this))
+    // btnReset.addEventListener('click', this.reset)
     btnPlus.addEventListener('click', this.addScreenBlock)
     inputRange.addEventListener('input', this.showRollback.bind(this))
   },
@@ -60,17 +60,68 @@ const appData = {
     this.showResult()
     this.logger()
 
-    // Блокировать (свойство disabled) все input[type=text] и select с левой стороны после нажатия кнопки Рассчитать, после этого кнопка Рассчитать пропадает и появляется кнопка Сброс (id=reset)
-    // start > Рассчитать
-    // reset style="display: none
+    screens.forEach((screen) => {
+      const select = screen.querySelector('select')
+      const input = screen.querySelector('input[type=text]')
+
+      select.disabled = true
+      input.disabled = true
+    })
+    btnPlus.disabled = true
+    btnStart.style.display = 'none'
+    btnReset.style.display = ''
   },
 
   reset() {
-    // Метод должен быть расписан наподобие start().
-    // привести объект к исходному состоянию:
-    // - Кнопка Сброс должна замениться на кнопку Рассчитать
-    // - Должны быть убраны все дополнительные элементы (которые добавлялись динамически) и значения полей ввода
-    // - Все input[type=text] и select должны быть разблокированы
+    this.title = ''
+    this.screens = []
+    this.screensCount = 0
+    this.screenPrice = 0
+    this.adaptive = true
+    this.rollback = 0
+    this.servicePricesPercent = 0
+    this.servicePricesNumber = 0
+    this.fullPrice = 0
+    this.servicePercentPrice = 0
+    this.servicesPercent = {}
+    this.servicesNumber = {}
+
+    screens.forEach((screen, i) => {
+      if (i === 0) {
+        const select = document.querySelector('select')
+        const input = document.querySelector('input[type=text]')
+
+        select.disabled = false
+        select.selectedIndex = 0
+        input.disabled = false
+        input.value = ''
+      } else {
+        screen.remove()
+      }
+    })
+    screens = document.querySelectorAll('.screen')
+
+    otherItemsPercent.forEach((item) => {
+      const check = item.querySelector('input[type=checkbox]')
+      if (check.checked) check.checked = false
+    })
+    otherItemsNumber.forEach((item) => {
+      const check = item.querySelector('input[type=checkbox]')
+      if (check.checked) check.checked = false
+    })
+
+    btnPlus.disabled = false
+    btnReset.style.display = 'none'
+    btnStart.style.display = ''
+    inputRange.value = 0
+    rangeValue.textContent = 0
+    total.value = 0
+    totalCount.value = 0
+    totalCountOther.value = 0
+    totalFullCount.value = 0
+    totalCountRollback.value = 0
+
+    this.logger()
   },
 
   showResult() {
