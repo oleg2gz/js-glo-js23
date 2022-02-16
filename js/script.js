@@ -36,12 +36,14 @@ const appData = {
   screenPrice: 0,
   adaptive: true,
   rollback: 0,
-  servicePricesPercent: 0,
-  servicePricesNumber: 0,
-  fullPrice: 0,
-  servicePercentPrice: 0,
   servicesPercent: {},
   servicesNumber: {},
+  servicesCMS: {},
+  servicePricesPercent: 0,
+  servicePricesNumber: 0,
+  servicePricesCMS: 0,
+  fullPrice: 0,
+  servicePercentPrice: 0,
 
   init() {
     this.addTitle()
@@ -100,12 +102,14 @@ const appData = {
     this.screenPrice = 0
     this.adaptive = true
     this.rollback = 0
-    this.servicePricesPercent = 0
-    this.servicePricesNumber = 0
-    this.fullPrice = 0
-    this.servicePercentPrice = 0
     this.servicesPercent = {}
     this.servicesNumber = {}
+    this.serviceCMS = {}
+    this.servicePricesPercent = 0
+    this.servicePricesNumber = 0
+    this.servicePricesCMS = 0
+    this.fullPrice = 0
+    this.servicePercentPrice = 0
 
     screens.forEach((screen, i) => {
       if (i === 0) {
@@ -155,7 +159,10 @@ const appData = {
   showResult() {
     total.value = this.screenPrice
     totalCount.value = this.screensCount
-    totalCountOther.value = this.servicePricesPercent + this.servicePricesNumber
+    totalCountOther.value =
+      this.servicePricesPercent +
+      this.servicePricesNumber +
+      this.servicePricesCMS
     totalFullCount.value = this.fullPrice
     totalCountRollback.value = this.servicePercentPrice
   },
@@ -184,11 +191,13 @@ const appData = {
         count: +input.value,
       })
     })
+    this.screensCount = this.screens.reduce((acc, { count }) => acc + count, 0)
   },
 
   addServices() {
     this.servicesPercent = {}
     this.servicesNumber = {}
+    this.servicesCMS = {}
 
     otherItemsPercent.forEach((item) => {
       const check = item.querySelector('input[type=checkbox]')
@@ -206,6 +215,17 @@ const appData = {
         this.servicesNumber[label.textContent] = +input.value
       }
     })
+
+    this.servicesCMS.name =
+      cmsSelect.options[cmsSelect.selectedIndex].textContent
+
+    if (this.isNumber(cmsSelect.value)) {
+      this.servicesCMS.percent = parseFloat(cmsSelect.value)
+    } else if (this.isNumber(cmsOtherInput.value)) {
+      this.servicesCMS.percent = parseFloat(cmsOtherInput.value)
+    } else {
+      this.servicesCMS.percent = 0
+    }
   },
 
   addScreenBlock() {
@@ -217,7 +237,6 @@ const appData = {
 
   addPrices() {
     this.screenPrice = this.screens.reduce((acc, { price }) => acc + price, 0)
-    this.screensCount = this.screens.reduce((acc, { count }) => acc + count, 0)
 
     this.servicePricesNumber = Object.values(this.servicesNumber).reduce(
       (acc, price) => acc + price,
@@ -231,12 +250,9 @@ const appData = {
     this.fullPrice =
       this.screenPrice + this.servicePricesNumber + this.servicePricesPercent
 
-    if (this.isNumber(cmsSelect.value)) {
-      this.fullPrice += this.fullPrice * (parseFloat(cmsSelect.value) / 100)
-    }
-
-    if (this.isNumber(cmsOtherInput.value)) {
-      this.fullPrice += this.fullPrice * (parseFloat(cmsOtherInput.value) / 100)
+    if (this.servicesCMS.percent) {
+      this.servicePricesCMS = this.fullPrice * (this.servicesCMS.percent / 100)
+      this.fullPrice += this.servicePricesCMS
     }
 
     this.servicePercentPrice = Math.ceil(
